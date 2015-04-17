@@ -155,6 +155,12 @@ if(isset($_GET['stashIsRoot'])){
 else{
   $isStartingSlashRoot=true;
 }
+if(isset($_GET['format'])){
+  $format = $_GET['format'];
+}
+else{
+  $format = "json";
+}
 
 $_GET['send_cookies']=true;
 $_GET['send_session']=true;
@@ -258,19 +264,25 @@ if ( $_GET['mode'] == 'native' ) {
   
   // Generate appropriate content-type header.
   $is_xhr = strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-  header( 'Content-type: application/' . ( $is_xhr ? 'json' : 'x-javascript' ) );
   
   // Get JSONP callback.
   $jsonp_callback = $enable_jsonp && isset($_GET['callback']) ? $_GET['callback'] : null;
-  $contents=$data['contents'];
+  $contents = $data['contents'];
 
-  $stringstart=strpos($contents,"<!DOCTYPE html>");
+  $stringstart = strpos($contents,"<!DOCTYPE html>");
   $mystring = substr($contents,$stringstart);
   //Types of links
   $mystring = convertRelativeToAbsolute($mystring,$url,$isStartingSlashRoot,$rootURL);
   // Generate JSON/JSONP string
   $json = json_encode( $mystring );
-  print $jsonp_callback ? "$jsonp_callback($json)" : $json;
+  if($format=="html"){
+    header( 'Content-type: text/html' );
+    print $mystring; 
+  }
+  else{
+    header( 'Content-type: application/' . ( $is_xhr ? 'json' : 'x-javascript' ) );
+    print $jsonp_callback ? "$jsonp_callback($json)" : $json;
+  }
   
 }
 
