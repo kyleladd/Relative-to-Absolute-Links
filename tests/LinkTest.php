@@ -25,6 +25,7 @@ class LinkTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, isAbsoluteLink("/home.html",0));
         $this->assertEquals(false, isAbsoluteLink("/posts/post.html",0));
         $this->assertEquals(false, isAbsoluteLink("posts/post.html",0));
+        $this->assertEquals(false, isAbsoluteLink("//www.youtube.com",0));
     }
 
     public function testIsAbsoluteLinkCaseInsensitive() {
@@ -291,4 +292,24 @@ class LinkTest extends PHPUnit_Framework_TestCase
         $result = convertRelativeToAbsolute($haystackString,$absoluteURL,$startingSlashMeansRoot);
         $this->assertEquals("This string does contain this <a href=\"#\">link.</a> Here is another <a href=\"http://www.example.com/path/to/directory/index.html\">link</a>.", $result);
     }
+    public function testConvertRelativeToAbsoluteTwoStartingSlashesString(){
+        $haystackString = "This string does contain this <a href=\"//www.youtube.com/path/to/directory/index.html\">link.</a> Here is another <a href=\"/index.html\">link</a>.";
+        $absoluteURL = "http://www.youtube.com/path/to/directory/index.html";
+        $startingSlashMeansRoot = false;
+        $result = convertRelativeToAbsolute($haystackString,$absoluteURL,$startingSlashMeansRoot);
+        $this->assertEquals("This string does contain this <a href=\"http://www.youtube.com/path/to/directory/index.html\">link.</a> Here is another <a href=\"http://www.youtube.com/path/to/directory/index.html\">link</a>.", $result);
+    }
+    public function testConvertRelativeToAbsoluteTwoStartingSlashes(){
+        $haystackString = "<a href=\"//www.youtube.com/path/to/directory/index.html\">link.</a>";
+        $absoluteURL = "http://www.youtube.com/path/to/directory/index.html";
+        $startingSlashMeansRoot = false;
+        $result = convertRelativeToAbsolute($haystackString,$absoluteURL,$startingSlashMeansRoot);
+        $this->assertEquals("<a href=\"http://www.youtube.com/path/to/directory/index.html\">link.</a>", $result);
+    }
+    public function testGetProtocol(){
+        $this->assertEquals(getProtocol("http://www.google.com/"),"http://");
+        $this->assertEquals(getProtocol("https://www.google.com/"),"https://");
+        $this->assertEquals(getProtocol("ftp://www.google.com/"),"ftp://");
+    }
+
 }

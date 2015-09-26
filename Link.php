@@ -23,8 +23,13 @@
       $start=intval($value[1])+intval(strlen($value[0]))+intval($adjustment);
       if(isAbsoluteLink($haystackString,$start)!==true){
         //it is a relative link and changes are required
+        if(substr($haystackString, $start,2)=="//"){
+          $result = convertStartingSlashes($haystackString,$rootURL,$theAbsoluteDirectory,$start,$startingSlashMeansRoot,$adjustment);
+          $haystackString = $result['haystack'];
+          $adjustment = $result['adjustment'];
+        }
         //If starting slash means go to rootURL
-        if(substr($haystackString, $start,1)=="/"){ 
+        elseif(substr($haystackString, $start,1)=="/"){ 
           $result = linkStartsWithSlash($haystackString,$rootURL,$theAbsoluteDirectory,$start,$startingSlashMeansRoot,$adjustment);
           $haystackString = $result['haystack'];
           $adjustment = $result['adjustment'];
@@ -235,4 +240,14 @@ function getResourcePositions($haystackString){
 function getRootURL($theAbsoluteURL){
   $slashpositions = getCharacterPositions($theAbsoluteURL);
   return substr($theAbsoluteURL, 0, $slashpositions[2] + 1); 
+}
+function getProtocol($link){
+  $ssc = strpos($link, "://");
+  return substr($link, 0, intval($ssc) + 3);
+}
+function convertStartingSlashes($haystackString,$rootURL,$theAbsoluteDirectory,$start,$startingSlashMeansRoot,$adjustment){
+  $protocol = getProtocol($rootURL);
+  $haystackString = substr_replace($haystackString, $protocol, $start, 2);
+  $adjustment = intval(strlen($protocol)-2)+intval($adjustment);
+  return array('haystack'=>$haystackString,'adjustment'=>$adjustment);
 }
