@@ -1,0 +1,27 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<style>
+  iframe{
+    border:none;
+  }
+  body{
+    margin:0;
+  }
+</style>
+<link rel="stylesheet" href="alert/alert.css">
+<script src="alert/alert.js"></script>
+<script>
+$(document).ready(function(){
+  $('.alert').alert();
+  $('#ifr').load(function(){
+    $('#ifr').contents().find('#content .rightcontent').html("<h1>Example preview changes.</h1>");
+  });
+});
+</script>
+</head>
+<body>
+  <div class="alert warning">This is only a preview and may not always be accurate.<a href="#" class="close">&times;</a></div>
+  <iframe id="ifr" src="../proxy.php?url=http://www.morrisville.edu/academics/&format=html" width="100%" height="100%"></iframe>
+</body>
+</html>
