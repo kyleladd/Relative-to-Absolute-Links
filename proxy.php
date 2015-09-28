@@ -149,8 +149,8 @@ else{
   $rootURL="";
 }
 
-if(isset($_GET['stashIsRoot'])){
-  $isStartingSlashRoot = $_GET['stashIsRoot']; 
+if(isset($_GET['slashIsRoot'])){
+  $isStartingSlashRoot = $_GET['slashIsRoot']; 
 }
 else{
   $isStartingSlashRoot=true;
